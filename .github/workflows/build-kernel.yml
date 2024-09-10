@@ -41,7 +41,7 @@ jobs:
       with:
         swap-size-gb: 10
         
-    - name: Checkout kernel test source
+    - name: Checkout repo
       uses: actions/checkout@v4
       with:
         ref: ${{ github.event.inputs.branch || 'stock' }}
