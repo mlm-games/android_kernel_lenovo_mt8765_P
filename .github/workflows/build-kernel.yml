@@ -17,6 +17,20 @@ on:
         description: 'Repository Branch'
         required: true
         default: 'stock'
+      tag_name:
+        description: 'Tag name'
+        required: true
+        default: 'v1'
+      upload_releases:
+        description: 'Upload releases'
+        required: true
+        default: 'true'
+        type: boolean
+      mark_prerelease:
+        description: 'Mark as prerelease'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
   build:
@@ -50,7 +64,7 @@ jobs:
     - name: Kernel build deps
       run: |
         sudo apt update
-        sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2.7
+        sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 python2.7
         sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
         sudo update-alternatives --set python /usr/bin/python2.7
 
@@ -63,3 +77,20 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/mlm-games/KernelSU-Non-GKI/main/kernel/setup-subm.sh" | bash -s 
         python3 KernelSU/scripts/integrate-no-kprobe.py ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
         ./build_kernel.sh ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
+    
+    
+    - name: Creating AnyKernel3 zip
+      run: |
+        ./KernelSU/scripts/kernel_zipper.sh
+
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v2
+      if: github.event_name == 'workflow_dispatch' && inputs.upload_releases == 'true'
+      with:
+        files: |
+          *ernel*.zip
+        name: Kernel Flashable zip // ${{ inputs.tag_name }}
+        tag_name: ${{ inputs.tag_name }}
+        body: |
+          Flash using custom recovery or Kernel Flasher Apps from FDroid
+        prerelease: ${{ inputs.mark_prerelease }}
