@@ -1,0 +1,67 @@
+name: Build kernel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      defconfig:
+        description: 'Defconfig file name'
+        required: true
+        default: 'mt8765_P_defconfig'
+      branch:
+        description: 'Repository Branch'
+        required: true
+        default: 'stock'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+    - name: Remove unused packages
+      if: env.REMOVE_UNUSED_PACKAGES == 'true'
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        android: false
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: false
+
+    - name: Set swap to 10G
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+        
+    - name: Checkout kernel test source
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.branch || 'stock' }}
+        fetch-depth: 1
+
+    - name: Set repository name
+      run: echo "REPO_NAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
+        
+    - name: Kernel build deps
+      run: |
+        sudo apt update
+        sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
+
+    - name: Download gcc
+      run: |
+        git clone https://github.com/djb77/aarch64-linux-android-4.9
+
+    - name: Add ksu and build kernel
+      run: |
+        cd $REPO_NAME
+        curl -LSs "https://raw.githubusercontent.com/mlm-games/KernelSU-Non-GKI/main/kernel/setup-subm.sh" | bash -s 
+        python3 KernelSU/scripts/integrate-no-kprobe.py ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
+        ./build_kernel.sh
