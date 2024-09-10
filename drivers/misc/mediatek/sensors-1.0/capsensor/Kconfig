@@ -1,0 +1,8 @@
+config MTK_KERNEL_CAPSENSOR
+	tristate "MTK_KERNEL_CAPSENSOR for MediaTek package"
+	default n
+	help
+	  It support different MTK_KERNEL_CAPSENSOR.
+          If this option is set,
+	  it will support
+          MTK_KERNEL_CAPSENSOR.
