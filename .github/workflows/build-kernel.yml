@@ -61,7 +61,7 @@ jobs:
 
     - name: Add ksu and build kernel
       run: |
-        cd $REPO_NAME
+        cd ${{ env.REPO_NAME }}
         curl -LSs "https://raw.githubusercontent.com/mlm-games/KernelSU-Non-GKI/main/kernel/setup-subm.sh" | bash -s 
         python3 KernelSU/scripts/integrate-no-kprobe.py ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
-        ./build_kernel.sh
+        ./build_kernel.sh ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
