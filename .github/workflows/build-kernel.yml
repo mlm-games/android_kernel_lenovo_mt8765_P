@@ -76,12 +76,12 @@ jobs:
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
-      if: github.event_name == 'workflow_dispatch' && ${{ inputs.upload_releases }} == 'true'
+      if: github.event_name == 'externalCall' && inputs.upload_releases == 'true'
       with:
         files: |
           *ernel*.zip
         name: Kernel Flashable zip // ${{ inputs.tag_name }}
         tag_name: ${{ inputs.tag_name }}
         body: |
-          Flash using custom recovery or Kernel Flasher Apps from FDroid
+          Flash using custom recovery or Kernel Flasher Apps from F-Droid
         prerelease: ${{ inputs.mark_prerelease }}
