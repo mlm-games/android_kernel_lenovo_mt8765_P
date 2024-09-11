@@ -24,7 +24,7 @@ on:
       upload_releases:
         description: 'Upload releases'
         required: true
-        default: 'true'
+        default: 'false'
         type: boolean
       mark_prerelease:
         description: 'Mark as prerelease'
