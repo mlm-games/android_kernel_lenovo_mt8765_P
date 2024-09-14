@@ -12,7 +12,7 @@ on:
       defconfig:
         description: 'Defconfig file name'
         required: true
-        default: 'mt8765_P_defconfig'
+        default: 'mt8765_P_custom_defconfig'
       branch:
         description: 'Repository Branch'
         required: true
@@ -66,8 +66,8 @@ jobs:
     - name: Add ksu and build kernel
       run: |
         curl -LSs "https://raw.githubusercontent.com/mlm-games/KernelSU-Non-GKI/main/kernel/setup-subm.sh" | bash -s 
-        python3 KernelSU/scripts/integrate-no-kprobe.py ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
-        ./build_kernel.sh ${{ github.event.inputs.defconfig || 'mt8765_P_defconfig' }}
+        python3 KernelSU/scripts/integrate-no-kprobe.py ${{ github.event.inputs.defconfig || 'mt8765_P_custom_defconfig' }}
+        ./build_kernel.sh ${{ github.event.inputs.defconfig || 'mt8765_P_custom_defconfig' }}
     
     
     - name: Creating AnyKernel3 zip
@@ -76,7 +76,7 @@ jobs:
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
-      if: ${{ inputs.upload_releases }} == 'true'
+      if: inputs.upload_releases == 'true'
       with:
         files: |
           *ernel*.zip
