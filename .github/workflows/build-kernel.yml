@@ -72,7 +72,7 @@ jobs:
     
     - name: Creating AnyKernel3 zip (add overlay also)
       run: |
-        ./KernelSU/scripts/kernel_zipper.sh --dtb out/arch/arm64/boot/dts/mediatek/mt8765_P.dtb
+        ./KernelSU/scripts/kernel_zipper.sh --dtb=out/arch/arm64/boot/dts/mediatek/mt8765_P.dtb
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
