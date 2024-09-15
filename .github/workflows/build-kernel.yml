@@ -70,9 +70,9 @@ jobs:
         ./build_kernel.sh ${{ github.event.inputs.defconfig || 'mt8765_P_custom_defconfig' }}
     
     
-    - name: Creating AnyKernel3 zip
+    - name: Creating AnyKernel3 zip (add overlay also)
       run: |
-        ./KernelSU/scripts/kernel_zipper.sh
+        ./KernelSU/scripts/kernel_zipper.sh --dtb out/arch/arm64/boot/dts/mediatek/mt8765_P.dtb
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
