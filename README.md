@@ -1,7 +1,7 @@
 # android_kernel_lenovo_mt8765_P
 Kernel for Lenovo Tab M7 (TB-7305X)
 
-Looks like the source code's kernel is broken as it boots but problems opening most apps: SIGABRT from hwcomposer.mt6739.so
+Looks like the open source lenovo code is broken as kernel boots but problems opening most apps (SIGABRTs from hwcomposer.mt6739.so for any overlay apps)
 
 Didn't check on any GSI
 
