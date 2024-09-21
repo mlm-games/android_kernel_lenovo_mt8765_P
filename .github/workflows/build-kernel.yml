@@ -74,6 +74,17 @@ jobs:
       run: |
         ./KernelSU/scripts/kernel_zipper.sh --kernel=out/arch/arm64/boot/Image.gz
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      if: inputs.upload_releases == false || github.event_name != 'workflow_dispatch'
+      with:
+        name: TWRP-Recovery-${{ github.event.repository.name }}
+        path: |
+          ${{ env.OUTPUT_DIR }}/*.img
+          ${{ env.OUTPUT_DIR }}/*.tar
+          ${{ env.OUTPUT_DIR }}/*vbmeta*
+          ${{ env.OUTPUT_DIR }}/*.cpio
+
     - name: Upload to Release
       uses: softprops/action-gh-release@v2
       if: github.event_name == 'workflow_dispatch' && inputs.upload_releases == true
@@ -85,3 +96,5 @@ jobs:
         body: |
           Flash using custom recovery or Kernel Flasher Apps from F-Droid
         prerelease: ${{ inputs.mark_prerelease }}
+
+      
