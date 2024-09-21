@@ -78,7 +78,7 @@ jobs:
     
     - name: Creating AnyKernel3 zip
       run: |
-        ./KernelSU/scripts/kernel_zipper.sh --kernel=out/arch/arm64/boot/Image.gz
+        ./KernelSU/scripts/kernel_zipper.sh
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
